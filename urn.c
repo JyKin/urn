@@ -646,6 +646,8 @@ int urn_timer_unsplit(urn_timer *timer) {
             timer->split_deltas[i] = 0;
             timer->split_info[i] = 0;
             timer->segment_times[i] = timer->game->segment_times[i];
+            timer->best_splits[i] = timer->game->best_splits[i];
+            timer->best_segments[i] = timer->game->best_segments[i];
             timer->segment_deltas[i] = 0;
         }
         if (timer->curr_split + 1 == timer->game->split_count) {
