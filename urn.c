@@ -650,6 +650,17 @@ int urn_timer_unsplit(urn_timer *timer) {
             timer->best_segments[i] = timer->game->best_segments[i];
             timer->segment_deltas[i] = 0;
         }
+        timer->sum_of_bests = 0;
+        for (i = 0; i < timer->game->split_count; ++i) {
+          if (timer->best_segments[i]) {
+            timer->sum_of_bests += timer->best_segments[i];
+          } else if (timer->game->best_segments[i]) {
+            timer->sum_of_bests += timer->game->best_segments[i];
+          } else {
+            timer->sum_of_bests = 0;
+            break;
+          }
+        }
         if (timer->curr_split + 1 == timer->game->split_count) {
             timer->running = 1;
         }
