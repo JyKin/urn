@@ -77,7 +77,7 @@ static void urn_time_string_format(char *string,
             sprintf(string, "%s%d:%02d:%02d%s",
                     sign, hours, minutes, seconds, dot_subsecs);
         } else {
-            sprintf(string, "%s%d:%02d", sign, hours, minutes);
+            sprintf(string, "%s%d:%02d:%02d", sign, hours, minutes, seconds);
         }
     } else if (minutes) {
         if (!compact) {
