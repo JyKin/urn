@@ -17,7 +17,7 @@ SCHEMAS_DIR = /usr/share/glib-2.0/schemas
 
 $(BIN): $(OBJS)
 
-$(OBJS): urn-gtk.h
+$(OBJS): urn-gtk.h urn.h components/urn-component.h keybinder.h
 
 urn-gtk.h: urn-gtk.css
 	xxd --include urn-gtk.css > urn-gtk.h || (rm urn-gtk.h; false)
