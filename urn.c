@@ -549,8 +549,7 @@ void urn_timer_step(urn_timer *timer, long long now) {
             }
             // check for losing time
             if (timer->curr_split) {
-                if (timer->split_deltas[timer->curr_split]
-                    > timer->split_deltas[timer->curr_split - 1]) {
+                if (timer->segment_deltas[timer->curr_split] > 0) {
                     timer->split_info[timer->curr_split]
                         |= URN_INFO_LOSING_TIME;
                 } else {
