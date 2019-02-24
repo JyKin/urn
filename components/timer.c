@@ -75,10 +75,6 @@ static void timer_draw(UrnComponent *self_, urn_game *game, urn_timer *timer) {
         --curr;
     }
 
-    remove_class(self->time, "delay");
-    remove_class(self->time, "behind");
-    remove_class(self->time, "losing");
-    remove_class(self->time, "best-split");
 
     if (curr == game->split_count) {
         curr = game->split_count - 1;
@@ -86,18 +82,24 @@ static void timer_draw(UrnComponent *self_, urn_game *game, urn_timer *timer) {
     if (timer->time <= 0) {
         add_class(self->time, "delay");
     } else {
+        remove_class(self->time, "delay");
         if (timer->curr_split == game->split_count
             && timer->split_info[curr]
                & URN_INFO_BEST_SPLIT) {
             add_class(self->time, "best-split");
-        } else{
+        } else {
+            remove_class(self->time, "best-split");
             if (timer->split_info[curr]
                 & URN_INFO_BEHIND_TIME) {
                 add_class(self->time, "behind");
+            } else {
+                remove_class(self->time, "behind");
             }
             if (timer->split_info[curr]
                 & URN_INFO_LOSING_TIME) {
                 add_class(self->time, "losing");
+            } else {
+            remove_class(self->time, "losing");
             }
         }
     }
