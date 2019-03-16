@@ -4,6 +4,7 @@ UrnComponent *urn_component_title_new();
 UrnComponent *urn_component_splits_new();
 UrnComponent *urn_component_timer_new();
 UrnComponent *urn_component_time_save_new();
+UrnComponent *urn_component_rem_time_save_new();
 UrnComponent *urn_component_prev_segment_new();
 UrnComponent *urn_component_best_sum_new();
 UrnComponent *urn_component_pb_new();
@@ -14,6 +15,7 @@ UrnComponentAvailable urn_components[] = {
     {"splits",       urn_component_splits_new},
     {"timer",        urn_component_timer_new},
     {"time-save", urn_component_time_save_new},
+    {"time-save", urn_component_rem_time_save_new},
     {"prev-segment", urn_component_prev_segment_new},
     {"best-sum",     urn_component_best_sum_new},
     {"pb",           urn_component_pb_new},

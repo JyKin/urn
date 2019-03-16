@@ -2,7 +2,7 @@ BIN         = urn-gtk
 OBJS        = urn.o urn-gtk.o bind.o $(COMPONENTS)
 COMPONENTS  = $(addprefix components/, \
               urn-component.o title.o splits.o timer.o \
-              prev-segment.o best-sum.o time-save.o pb.o wr.o)
+              prev-segment.o best-sum.o time-save.o pb.o wr.o time-save-rem.o)
 
 LIBS        = gtk+-3.0 x11 jansson
 CFLAGS      += `pkg-config --cflags $(LIBS)` -Wall -Wno-unused-parameter -std=gnu99
