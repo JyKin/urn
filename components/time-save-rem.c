@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include "urn-component.h"
 
 typedef struct _UrnRemTimeSave {
@@ -73,11 +74,49 @@ static void time_save_draw(UrnComponent *self_, urn_game *game,
     if (timer->started)
         start++;
 
+    // when we lack segments times but have best_segments, we can compute the time to save by cumulating multiple splits
+    bool accumulating = false;
+    long long start_accu = 0;
+    long long best_accu = 0;
     for (int i = start; i <game->split_count; i++) {
-        if (!game->segment_times[i] || !game->best_segments[i]) {
-            continue;
+        if (accumulating) {
+            // If we have neither a segment time nor a best segment, we're screwed
+            // to do accumulation. So add what we know for sure when we tried to
+            // accumulate.
+            if (!game->best_segments[i] && !game->segment_times[i]) {
+                accumulating = false;
+                continue;
+            }
+            // If have a split time, we can stop accumulation.
+            if (game->split_times[i]) {
+                long long duration = game->split_times[i] - start_accu;
+                long long local_best = game->best_segments[i] ? game->best_segments[i] : game->segment_times[i];
+                rem += duration - best_accu - local_best;
+                accumulating = false;
+                start_accu = 0;
+                best_accu = 0;
+            } else {
+                // otherwise, accumulate best duration
+                best_accu  += game->best_segments[i] ? game->best_segments[i] : game->segment_times[i];
+            }
+        } else {
+            // no best segment, ignore
+            if (!game->best_segments[i]) {
+                continue;
+            }
+            if (!game->segment_times[i]) {
+                // no previous split times, ignore too, we can't start
+                // accumulating
+                if (i > 0 && !game->split_times[i - 1]) {
+                    continue;
+                }
+                accumulating = true;
+                best_accu  = game->best_segments[i];
+                start_accu = i > 0 ? game->split_times[i-1] : 0;
+                continue;
+            }
+            rem += game->segment_times[i] - game->best_segments[i];
         }
-        rem += game->segment_times[i] - game->best_segments[i];
     }
 
 
