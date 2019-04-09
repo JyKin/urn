@@ -75,8 +75,7 @@ static void time_save_draw(UrnComponent *self_, urn_game *game,
 
     for (int i = start; i <game->split_count; i++) {
         if (!game->segment_times[i] || !game->best_segments[i]) {
-        gtk_label_set_text(GTK_LABEL(self->time_save), "-");
-        return;
+            continue;
         }
         rem += game->segment_times[i] - game->best_segments[i];
     }
