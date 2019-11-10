@@ -215,7 +215,9 @@ static void splits_draw(UrnComponent *self_, urn_game *game, urn_timer *timer) {
         remove_class(self->split_deltas[i], "delta");
         gtk_label_set_text(GTK_LABEL(self->split_deltas[i]), "");
         if (i < timer->curr_split
-            || timer->split_deltas[i] >= SHOW_DELTA_THRESHOLD || (i == timer->curr_split && timer->segment_deltas[i] > 0)) {
+            || timer->split_deltas[i] >= SHOW_DELTA_THRESHOLD
+            || (i == timer->curr_split && (timer->segment_times[i] && timer->best_segments[i]
+                    && ((timer->segment_times[i] - timer->best_segments[i]) > 0)))) {
             if (timer->split_info[i] & URN_INFO_BEST_SPLIT) {
                 add_class(self->split_deltas[i], "best-split");
             }
