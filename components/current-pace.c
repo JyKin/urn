@@ -62,28 +62,28 @@ static void current_pace_clear_game(UrnComponent *self_) {
 static void current_pace_draw(UrnComponent *self_, urn_game *game,
         urn_timer *timer) {
     UrnCurrentPace *self = (UrnCurrentPace *)self_;
-    const char *label;
     char str[256];
-    int prev, curr = timer->curr_split;
-    if (curr == game->split_count || !game->segment_times[curr] || !game->best_segments[curr]) {
+    int curr = timer->curr_split;
+    if (curr == game->split_count) {
         gtk_label_set_text(GTK_LABEL(self->current_pace), "-");
         return;
     }
-    long long lost = 0;
-    for (int i = 0; i < game->split_count ; i++) {
-        if (i < curr) {
-            if (timer->segment_times[i]) {
-                lost += timer->segment_times[i];
-            } else {
-                lost += game->best_segments[i];
-            }
-        } else {
-            lost += game->best_segments[i];
+    long long bests_next = 0;
+    for (int i = curr+1; i < game->split_count; i++) {
+        if (!game->best_segments[i]) {
+            gtk_label_set_text(GTK_LABEL(self->current_pace), "-");
+            return;
         }
+        bests_next += game->best_segments[i];
+    }
+    if (curr == 0 || timer->split_times[curr-1] == 0 || game->best_segments[curr] == 0
+            || timer->segment_times[curr] > game->best_segments[curr]) {
+        bests_next += timer->now;
+    } else {
+        bests_next += timer->split_times[curr-1];
     }
 
-
-    urn_split_string(str, lost);
+    urn_split_string(str, bests_next);
     gtk_label_set_text(GTK_LABEL(self->current_pace), str);
 }
 
