@@ -1,7 +1,7 @@
 BIN         = urn-gtk
 OBJS        = urn.o urn-gtk.o bind.o $(COMPONENTS)
 COMPONENTS  = $(addprefix components/, \
-              urn-component.o title.o splits.o timer.o current-pace.o \
+              urn-component.o title.o splits.o timer.o best-possible.o \
               prev-segment.o best-sum.o time-save.o pb.o wr.o time-save-rem.o)
 
 LIBS        = gtk+-3.0 x11 jansson
