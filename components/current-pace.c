@@ -64,27 +64,53 @@ static void current_pace_draw(UrnComponent *self_, urn_game *game,
     UrnCurrentPace *self = (UrnCurrentPace *)self_;
     char str[256];
     int curr = timer->curr_split;
-    if (curr == game->split_count) {
+    if (curr == game->split_count || !timer->started) {
         gtk_label_set_text(GTK_LABEL(self->current_pace), "-");
         return;
     }
     long long bests_next = 0;
     for (int i = curr+1; i < game->split_count; i++) {
         if (!game->best_segments[i]) {
-            gtk_label_set_text(GTK_LABEL(self->current_pace), "-");
-            return;
+            goto fail;
         }
         bests_next += game->best_segments[i];
     }
-    if (curr == 0 || timer->split_times[curr-1] == 0 || game->best_segments[curr] == 0
-            || timer->segment_times[curr] > game->best_segments[curr]) {
-        bests_next += timer->now;
+    if (curr == 0 || timer->split_times[curr-1]) {
+        if (timer->segment_times[curr] > game->best_segments[curr]) {
+            bests_next += timer->time;
+        } else {
+            bests_next += game->best_segments[curr];
+            if (curr)
+                bests_next += timer->split_times[curr-1];
+        }
     } else {
-        bests_next += timer->split_times[curr-1];
+        int baseidx = curr - 1;
+        while (baseidx >= 0 && timer->split_times[baseidx] == 0)
+            baseidx--;
+        long long base = (baseidx < 0) ? 0 : timer->split_times[baseidx];
+        long long best = 0;
+        for (int i = baseidx+1; i <= curr; i++) {
+            if (!game->best_segments[i]) {
+                goto fail;
+            }
+            best += game->best_segments[i];
+        }
+        long long seg = timer->time - base;
+        if (seg > best) {
+            bests_next += timer->time;
+        } else {
+            bests_next += best;
+            bests_next += base;
+        }
     }
+
 
     urn_split_string(str, bests_next);
     gtk_label_set_text(GTK_LABEL(self->current_pace), str);
+    return;
+fail:
+    gtk_label_set_text(GTK_LABEL(self->current_pace), "-");
+    return;
 }
 
 UrnComponentOps urn_current_pace_operations = {
