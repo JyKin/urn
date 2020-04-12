@@ -609,9 +609,9 @@ int urn_timer_split(urn_timer *timer) {
                 timer->split_info[timer->curr_split]
                     |= URN_INFO_BEST_SPLIT;
             }
-            if (!timer->best_segments[timer->curr_split]
+            if (timer->segment_times[timer->curr_split] && (!timer->best_segments[timer->curr_split]
                 || timer->segment_times[timer->curr_split]
-                < timer->best_segments[timer->curr_split]) {
+                < timer->best_segments[timer->curr_split])) {
                 timer->best_segments[timer->curr_split] =
                     timer->segment_times[timer->curr_split];
                 timer->split_info[timer->curr_split]
